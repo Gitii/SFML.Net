@@ -105,6 +105,30 @@ namespace SFML
 
             ////////////////////////////////////////////////////////////
             /// <summary>
+            /// Construct the image from a file in memory
+            /// </summary>
+            /// <param name="bytes">Byte array containing the file contents</param>
+            /// <param name="length">The length of the byte array</param>
+            /// <exception cref="ArgumentException">The passed in pointer is zero or the length less or equal to zero.</exception>
+            /// <exception cref="LoadingFailedException" />
+            ////////////////////////////////////////////////////////////
+            public Image(IntPtr bytes, ulong length) :
+                base(IntPtr.Zero)
+            {
+                if (bytes == IntPtr.Zero)
+                    throw new ArgumentException("The pointer to byte array must not be null.", nameof(bytes));
+
+                if (length <= 0u)
+                    throw new ArgumentException("The length of the byte array must be greater than zero.", nameof(length));
+
+                CPointer = sfImage_createFromMemory(bytes, length);
+
+                if (CPointer == IntPtr.Zero)
+                    throw new LoadingFailedException("image");
+            }
+
+            ////////////////////////////////////////////////////////////
+            /// <summary>
             /// Construct the image directly from an array of pixels
             /// </summary>
             /// <param name="pixels">2 dimensions array containing the pixels</param>
