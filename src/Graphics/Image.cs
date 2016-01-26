@@ -109,7 +109,7 @@ namespace SFML
             /// </summary>
             /// <param name="bytes">Byte array containing the file contents</param>
             /// <param name="length">The length of the byte array</param>
-            /// <exception cref="ArgumentException">The passed in pointer is zero or the length less or equal to zero.</exception>
+            /// <exception cref="ArgumentException">The passed in pointer is zero or the length is less or equal to zero.</exception>
             /// <exception cref="LoadingFailedException" />
             ////////////////////////////////////////////////////////////
             public Image(IntPtr bytes, ulong length) :
@@ -125,6 +125,20 @@ namespace SFML
 
                 if (CPointer == IntPtr.Zero)
                     throw new LoadingFailedException("image");
+            }
+
+            ////////////////////////////////////////////////////////////
+            /// <summary>
+            /// Construct the image from a file in memory
+            /// </summary>
+            /// <param name="bytes">Byte array containing the file contents</param>
+            /// <param name="length">The length of the byte array</param>
+            /// <exception cref="ArgumentException">The passed in pointer is zero or the length is less or equal to zero.</exception>
+            /// <exception cref="LoadingFailedException" />
+            ////////////////////////////////////////////////////////////
+            public Image(IntPtr bytes, int length) :
+                this(bytes, (ulong) length)
+            {
             }
 
             ////////////////////////////////////////////////////////////
@@ -318,6 +332,57 @@ namespace SFML
                     Marshal.Copy(sfImage_getPixelsPtr(CPointer), PixelsPtr, 0, PixelsPtr.Length);
                     return PixelsPtr;
                 }
+            }
+
+            ////////////////////////////////////////////////////////////
+            /// <summary>
+            /// Returns the pointer to the pixel data in unmanaged memory.
+            /// </summary>
+            /// <remarks>
+            /// No memory is copied.
+            /// </remarks>
+            /// <param name="length">Length of the array in unmanaged memory.</param>
+            /// <returns>Pointer to the pixel data</returns>
+            ////////////////////////////////////////////////////////////
+            public IntPtr GetNativeData(out int length)
+            {
+                ulong l;
+                IntPtr data = GetNativeData(out l);
+                length = (int) l;
+                return data;
+            }
+
+            ////////////////////////////////////////////////////////////
+            /// <summary>
+            /// Returns the pointer to the pixel data in unmanaged memory.
+            /// </summary>
+            /// <remarks>
+            /// No memory is copied.
+            /// </remarks>
+            /// <param name="length">Length of the array in unmanaged memory.</param>
+            /// <returns>Pointer to the pixel data</returns>
+            ////////////////////////////////////////////////////////////
+            public IntPtr GetNativeData(out ulong length)
+            {
+                Vector2u size = Size;
+                length = size.X * size.Y * 4;
+                return sfImage_getPixelsPtr(CPointer);
+            }
+
+            ////////////////////////////////////////////////////////////
+            /// <summary>
+            /// Returns the pointer to the pixel data in unmanaged memory.
+            /// </summary>
+            /// <remarks>
+            /// No memory is copied.
+            /// The length of the array in unmanaged memory is "width * height * 4".
+            /// </remarks>
+            /// <returns>Pointer to the pixel data</returns>
+            ////////////////////////////////////////////////////////////
+            public IntPtr GetNativeData()
+            {
+                ulong l;
+                return GetNativeData(out l);
             }
 
             ////////////////////////////////////////////////////////////
