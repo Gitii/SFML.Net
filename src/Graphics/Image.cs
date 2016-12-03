@@ -2,14 +2,11 @@ using System;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.IO;
-using System.Runtime.ConstrainedExecution;
 using SFML.Window;
 using SFML.System;
 
-namespace SFML
+namespace SFML.Graphics
 {
-    namespace Graphics
-    {
         ////////////////////////////////////////////////////////////
         /// <summary>
         /// Image is the low-level class for loading and
@@ -500,4 +497,3 @@ namespace SFML
             #endregion
         }
     }
-}
